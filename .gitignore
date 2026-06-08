@@ -1,0 +1,51 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python build/package files
+build/
+dist/
+*.egg-info/
+
+# Test/cache files
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# FastAPI / local runtime
+*.log
+
+# Database files
+*.db
+*.sqlite3
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Erlang / Rebar3
+_build/
+*.beam
+*.ez
+erl_crash.dump
+rebar3.crashdump
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker override/local files
+docker-compose.override.yml
