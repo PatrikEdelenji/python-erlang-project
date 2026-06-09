@@ -26,16 +26,22 @@ class MetricCreate(BaseModel):
 class MetricResponse(MetricCreate):
     timestamp:datetime
 
+
+class AlertResponse(BaseModel):
+    node_id: str
+    alert_type: str
+    message: str
+    timestamp: datetime
+
+
 metrics_store: List[MetricResponse] = []
+alerts_store: List[AlertResponse] = []
 
 
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
 
 @app.post("/metrics", response_model = MetricResponse)
 #there is a parameter called metric, fastapi should create it from the request body, the request body must match the metriccreate model
+#metric - actuall data   MetricCreate - blueprint for what that data should look like
 def create_metric(metric: MetricCreate):
     new_metric = MetricResponse(
         #the ** basically unpacks the dictionary into keywords... "node_id"="node_001" to node_id="node_001"
@@ -45,8 +51,65 @@ def create_metric(metric: MetricCreate):
 
     metrics_store.append(new_metric)
 
+    check_for_alerts(new_metric)
+
     return new_metric
 
 @app.get("/metrics", response_model=List[MetricResponse])
 def get_metrics():
     return metrics_store
+
+@app.get("/alerts", response_model=List[AlertResponse])
+def get_alerts():
+    return alerts_store
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+@app.get("/nodes")
+def get_nodes():
+    node_ids = set()
+
+    for metric in metrics_store:
+        node_ids.add(metric.node_id)
+
+    return {
+        "nodes": sorted(node_ids),
+        "count": len(node_ids)
+    }
+
+
+
+def check_for_alerts(metric: MetricResponse):
+    if metric.latency_ms > 200:
+        alerts_store.append(
+            AlertResponse(
+                node_id=metric.node_id,
+                alert_type="HIGH_LATENCY",
+                message=f"High latency detected: {metric.latency_ms} ms",
+                timestamp=datetime.now(timezone.utc),
+            )
+        )
+    
+    if metric.packet_loss > 5:
+        alerts_store.append(
+            AlertResponse(
+                node_id=metric.node_id,
+                alert_type="PACKET_LOSS",
+                message=f"Packet loss detected: {metric.packet_loss}%",
+                timestamp=datetime.now(timezone.utc),  
+            )
+        )
+
+    if metric.cpu_usage > 90:
+        alerts_store.append(
+            AlertResponse(
+                node_id=metric.node_id,
+                alert_type="HIGH_CPU_USAGE",
+                message=f"High CPU usage detected: {metric.cpu_usage}%",
+                timestamp=datetime.now(timezone.utc),   
+            )
+        )
+
+    
