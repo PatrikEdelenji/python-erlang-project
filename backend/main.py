@@ -15,11 +15,11 @@ app = FastAPI(
 #and fastapi is using pydantic models for request validation
 #we could have skipped the whole "Field(..., example="node_001")" thing, and just went with node_id: str
 class MetricCreate(BaseModel):
-    node_id: str = Field(..., example="node_001")
-    latency_ms: float = Field(..., example=120)
-    packet_loss: float = Field(..., example=1.2)
-    cpu_usage: float = Field(..., example=45.0)
-    memory_usage: float = Field(..., example=60.0)
+    node_id: str = Field(..., min_length=1,example="node_001")
+    latency_ms: float = Field(..., ge=0, example=120)
+    packet_loss: float = Field(..., ge=0, le=100, example=1.2)
+    cpu_usage: float = Field(..., ge=0, le=100, example=45.0)
+    memory_usage: float = Field(..., ge=0, le=100, example=60.0)
     
 #backed creates the datetime, because the client should not decite the timestamp
 #this is the data the backed sends back
