@@ -32,3 +32,7 @@ def get_node_ids(db: Session) -> List[str]:
     node_rows = db.query(MetricDB.node_id).distinct().all()
 
     return [row[0] for row in node_rows]
+
+
+def get_metrics_by_node(db: Session, node_id: str) -> List[MetricDB]:
+    return db.query(MetricDB).filter(MetricDB.node_id == node_id).all()
