@@ -1,23 +1,26 @@
-Network Intelligence Simulator
+# Network Intelligence Simulator
 
 This is a small Erlang/OTP + Python project that simulates telecom network nodes and monitors their metrics.
 
-The Erlang part simulates multiple network nodes as supervised worker processes. Each node sends metrics such as latency, packet loss, CPU usage, and memory usage to a Python FastAPI backend, and the backend stores the metrics in PostgreSQL and creates alerts when values exceed defined thresholds.
+The Erlang part simulates multiple network nodes as supervised worker processes. Each node sends metrics such as latency, packet loss, CPU usage, and memory usage to a Python FastAPI backend. The backend stores the metrics in PostgreSQL and creates alerts when values exceed defined thresholds.
 
-How to run
-Prerequisites
+## How to run
+
+### Prerequisites
 
 Make sure the following are installed:
 
-Python
-Erlang/OTP
-Docker Desktop
+- Python
+- Erlang/OTP
+- Docker Desktop
 
-1. Start the backend
+### 1. Start the backend
 
 From the project root:
 
+```cmd
 start_backend.bat
+```
 
 This starts PostgreSQL using Docker Compose and runs the FastAPI backend.
 
@@ -25,15 +28,17 @@ The API documentation is available at:
 
 http://127.0.0.1:8000/docs
 
-2. Start the Erlang simulator
+### 2. Start the Erlang simulator
 
 Open a second terminal from the project root:
 
+```cmd
 start_simulator.bat
+```
 
 This compiles and starts the Erlang/OTP simulator.
 
-3. Stop the application
+### 3. Stop the application
 
 Stop the backend or simulator with:
 
@@ -41,9 +46,11 @@ Ctrl + C
 
 Stop PostgreSQL with:
 
+```cmd
 docker compose down
+```
 
-Node configuration
+### Node configuration
 
 Simulated nodes are configured in:
 
@@ -67,7 +74,7 @@ After starting the backend, open:
 
 http://127.0.0.1:8000/docs
 
-Available endpoints:
+### Available endpoints:
 
 GET /health
 POST /metrics
