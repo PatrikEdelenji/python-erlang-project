@@ -58,17 +58,22 @@ simulator/nodes.config
 
 Example:
 
+```
 [
 {"erlang_node_001", stable, 0},
 {"erlang_node_002", unstable, 3},
 {"erlang_node_003", critical, 10},
 {"erlang_node_004", unstable, 5}
 ].
+```
 
 Each entry contains:
 
-node_id, risk_profile, crash_chance_percent
-API endpoints
+- node_id
+- risk_profile
+- crash_chance_percent
+
+### API endpoints
 
 After starting the backend, open:
 
@@ -76,21 +81,24 @@ http://127.0.0.1:8000/docs
 
 ### Available endpoints:
 
-GET /health
-POST /metrics
-GET /metrics
-GET /metrics/{node_id}
-GET /alerts
-GET /nodes
-How it works
+- GET /health
+- POST /metrics
+- GET /metrics
+- GET /metrics/{node_id}
+- GET /alerts
+- GET /nodes
+
+### How it works
 
 The Erlang simulator starts several supervised node workers. Each worker periodically generates random network metrics and sends them to the FastAPI backend using HTTP POST requests.
 
 The Python backend validates incoming metrics, stores them in PostgreSQL, and creates alerts for problematic values such as:
 
-high latency
-packet loss
-high CPU usage
-high memory usage
+- high latency
+- packet loss
+- high CPU usage
+- high memory usage
 
 If a simulated Erlang node crashes, the OTP supervisor restarts it automatically.
+
+### This project is still work in progress.
