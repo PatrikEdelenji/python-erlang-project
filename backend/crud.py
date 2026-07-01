@@ -38,3 +38,22 @@ def get_node_ids(db: Session) -> List[str]:
 
 def get_metrics_by_node(db: Session, node_id: str) -> List[MetricDB]:
     return db.query(MetricDB).filter(MetricDB.node_id == node_id).all()
+
+
+def get_latest_metric_per_node(db: Session) -> List[MetricDB]:
+    node_ids = get_node_ids(db)
+
+    latest_metrics = []
+
+    for node_id in node_ids:
+        latest_metric = (
+            db.query(MetricDB)
+            .filter(MetricDB.node_id == node_id)
+            .order_by(MetricDB.timestamp.desc())
+            .first()
+        )
+
+        if latest_metric:
+            latest_metrics.append(latest_metric)
+
+    return latest_metrics
