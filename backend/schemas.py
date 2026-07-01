@@ -32,6 +32,7 @@ class AlertResponse(BaseModel):
         "from_attributes": True
     }
 
+
 class IncidentResponse(BaseModel):
     node_id: str
     severity: str
@@ -40,3 +41,15 @@ class IncidentResponse(BaseModel):
     alert_types: List[str]
     summary: str
     recommended_action: str
+
+
+class AgentAskRequest(BaseModel):
+    question: str
+
+
+class AgentAskResponse(BaseModel):
+    question: str
+    answer: str
+    used_tools: list[str]
+    related_incidents: list[IncidentResponse]
+    related_runbooks: list[dict]
