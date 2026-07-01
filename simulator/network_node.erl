@@ -1,31 +1,34 @@
 -module(network_node).
 
--export([start_link/2]).
+-export([start_link/3]).
 
-start_link(NodeId, Profile) ->
-    Pid = spawn_link(fun() -> init(NodeId, Profile) end),
+start_link(NodeId, Profile, CrashChance) ->
+    Pid = spawn_link(fun() -> init(NodeId, Profile, CrashChance) end),
     {ok, Pid}.
 
-init(NodeId, Profile) ->
-    io:format("Starting node ~s with profile ~p~n", [NodeId, Profile]),
-    loop(NodeId, Profile).
+init(NodeId, Profile, CrashChance) ->
+    io:format(
+        "Starting node ~s with profile ~p, crash chance ~p%, pid ~p~n",
+        [NodeId, Profile, CrashChance, self()]
+    ),
+    loop(NodeId, Profile, CrashChance).
 
-loop(NodeId, Profile) ->
-    maybe_crash(NodeId, Profile),
+loop(NodeId, Profile, CrashChance) ->
+    maybe_crash(NodeId, CrashChance),
     metric_sender:send_once(NodeId, Profile),
     timer:sleep(5000),
-    loop(NodeId, Profile).
+    loop(NodeId, Profile, CrashChance).
 
-maybe_crash(NodeId, critical) ->
+maybe_crash(_NodeId, 0) ->
+    ok;
+
+maybe_crash(NodeId, CrashChance) ->
     Chance = rand:uniform(100),
 
-    case Chance =< 10 of
+    case Chance =< CrashChance of
         true ->
-            io:format("Node ~s crashed due to critical state~n", [NodeId]),
+            io:format("Node ~s crashed with configured chance ~p%~n", [NodeId, CrashChance]),
             exit(simulated_crash);
         false ->
             ok
-    end;
-
-maybe_crash(_NodeId, _Profile) ->
-    ok.
+    end.

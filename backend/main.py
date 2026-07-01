@@ -41,6 +41,10 @@ def create_metric(metric: MetricCreate, db: Session = Depends(get_db)):
 def get_metrics(db: Session = Depends(get_db)):
     return crud.get_metrics(db)
 
+@app.get("/metrics/{node_id}", response_model=list[MetricResponse])
+def get_metrics_by_node(node_id: str, db: Session = Depends(get_db)):
+    return crud.get_metrics_by_node(db, node_id)
+
 
 @app.get("/alerts", response_model=list[AlertResponse])
 def get_alerts(db: Session = Depends(get_db)):
@@ -63,10 +67,6 @@ def get_nodes(db: Session = Depends(get_db)):
 def read_incidents(db: Session = Depends(get_db)):
     return crud.get_incidents(db)
 
-
-@app.get("/runbooks/search")
-def search_runbook_endpoint(query: str):
-    return search_runbooks(query)
 
     
 @app.post("/agent/ask", response_model=AgentAskResponse)
