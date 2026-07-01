@@ -4,8 +4,11 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from fastapi import Depends, FastAPI
 
-from schemas import MetricCreate, MetricResponse, AlertResponse
+from schemas import MetricCreate, MetricResponse, AlertResponse, IncidentResponse, AgentAskRequest, AgentAskResponse
 from alerting import check_for_alerts
+
+from runbook_search import search_runbooks
+from agent_service import answer_question
 
 
 
@@ -60,6 +63,12 @@ def get_nodes(db: Session = Depends(get_db)):
         "count": len(node_ids),
     }
 
+@app.get("/incidents", response_model=list[IncidentResponse])
+def read_incidents(db: Session = Depends(get_db)):
+    return crud.get_incidents(db)
 
 
     
+@app.post("/agent/ask", response_model=AgentAskResponse)
+def ask_agent(request: AgentAskRequest, db: Session = Depends(get_db)):
+    return answer_question(db=db, question=request.question)

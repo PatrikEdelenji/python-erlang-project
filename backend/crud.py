@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from models import AlertDB, MetricDB
 from schemas import MetricCreate
 
+from collections import defaultdict
+
 
 def create_metric(db: Session, metric: MetricCreate) -> MetricDB:
     db_metric = MetricDB(
