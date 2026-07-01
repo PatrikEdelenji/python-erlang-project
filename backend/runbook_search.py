@@ -21,7 +21,7 @@ def search_runbooks(query: str) -> list[dict]:
                     "title": file_path.stem.replace("_", " ").title(),
                     "file_name": file_path.name,
                     "score": score,
-                    "content": content,
+                    "snippet": content[:500] + "..." if len(content) > 500 else content,
                 }
             )
 

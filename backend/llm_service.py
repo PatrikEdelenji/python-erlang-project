@@ -98,7 +98,7 @@ def build_context(
                 {
                     "title": runbook["title"],
                     "file_name": runbook["file_name"],
-                    "snippet": runbook["snippet"],
+                    "snippet": runbook.get("snippet", runbook.get("content", "")),
                 }
             )
         )
