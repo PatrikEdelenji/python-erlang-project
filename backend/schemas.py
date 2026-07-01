@@ -2,6 +2,9 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
+from pydantic import BaseModel
+from typing import List
+
 
 class MetricCreate(BaseModel):
     node_id: str = Field(..., min_length=1, example="node_001")
@@ -28,3 +31,12 @@ class AlertResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class IncidentResponse(BaseModel):
+    node_id: str
+    severity: str
+    status: str
+    alert_count: int
+    alert_types: List[str]
+    summary: str
+    recommended_action: str

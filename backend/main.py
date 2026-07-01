@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from fastapi import Depends, FastAPI
 
-from schemas import MetricCreate, MetricResponse, AlertResponse
+from schemas import MetricCreate, MetricResponse, AlertResponse, IncidentResponse
 from alerting import check_for_alerts
 
 
@@ -55,6 +55,10 @@ def get_nodes(db: Session = Depends(get_db)):
         "nodes": sorted(node_ids),
         "count": len(node_ids),
     }
+
+@app.get("/incidents", response_model=list[IncidentResponse])
+def read_incidents(db: Session = Depends(get_db)):
+    return crud.get_incidents(db)
 
 
 
